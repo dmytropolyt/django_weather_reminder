@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions, viewsets
@@ -6,7 +5,6 @@ from .models import City, Subscribe
 from .serializers import CitySerializer, SubscribeSerializer
 from .permissions import IsAdminOrIsAuthenticated, IsOwnerOrIsAuthenticated
 from .funcs import add_weather_info
-import requests
 
 
 class CityViewSet(viewsets.ModelViewSet):
