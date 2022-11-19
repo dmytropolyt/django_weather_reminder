@@ -83,8 +83,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'django_weather_reminder',
-        'USER': 'postgres',
-        'PASSWORD': '121212q',
+        'USER': 'dbdmytro',
+        'PASSWORD': '121212dk',
         'HOST': '127.0.0.1',
         'PORT': '5432'
     }

@@ -1,0 +1,50 @@
+services:
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+
+  db:
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=django_weather_reminder
+      - POSTGRES_USER=dbdmytro
+      - POSTGRES_PASSWORD=121212dk
+    container_name: postgres-db
+
+  app:
+    build: weather_reminder
+    volumes:
+      - .:/usr/src/app/
+    ports:
+      - 8000:8000
+    image: app:django
+    container_name: django_app
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+
+  celery:
+    restart: always
+    build: weather_reminder
+    command: celery -A core worker -l info
+    volumes:
+      - .:/usr/src/app/
+    container_name: celery
+    depends_on:
+      - db
+      - redis
+      - app
+
+  celery-beat:
+    build: weather_reminder
+    command: celery -A core beat -l info -S django
+    volumes:
+      - .:/usr/src/app/
+    container_name: celery-beat
+    depends_on:
+      - redis
+      - db
+      - app
+      - celery

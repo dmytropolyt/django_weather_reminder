@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
 from django.conf import settings
-from celery.schedules import crontab
+from django.apps import apps
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'weather_reminder.settings')
 
@@ -31,7 +31,7 @@ app.config_from_object(settings, namespace='CELERY')
 #         'schedule': crontab(hour=12, minute=0)
 #     }
 # }
-app.autodiscover_tasks()
+app.autodiscover_tasks(lambda: [n.name for n in apps.get_app_configs()])
 
 
 @app.task(bind=True)
