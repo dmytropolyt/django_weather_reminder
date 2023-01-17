@@ -32,6 +32,15 @@ def jwt_authenticate(db, create_user, client, test_password):
 
 
 @pytest.fixture
+def jwt_authenticate_second(db, create_user, test_password):
+    user = create_user(username='dmytro')
+    client = APIClient()
+    jwt = client.post('/api/token/', {'username': user.username, 'password': test_password})
+    client.credentials(HTTP_AUTHORIZATION='Bearer ' + jwt.data['access'])
+    return client
+
+
+@pytest.fixture
 def jwt_authenticate_for_admin(db, create_user, client, test_password):
     user = create_user(is_staff=True)
     jwt = client.post('/api/token/', {'username': user.username, 'password': test_password})
@@ -46,10 +55,12 @@ def create_city(db, jwt_authenticate):
     client.post('/api/v1/city/', payload)
     return client
 
+
 @pytest.fixture
 def create_subscribe(db, create_city):
     client = create_city
-    payload = {'city': 'Kyiv', 'parameter': 2}
+    payload = {'city': 'Kyiv', 'parameter': "1"}
     client.post('/api/v1/subscribe/', payload)
     return client
+
 
